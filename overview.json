@@ -1,0 +1,52 @@
+# Market Terminal Lite
+
+Bloomberg-inspired market dashboard con datos reales baratos o gratis, pensado para desplegarse como web estática y regenerar JSON con GitHub Actions.
+
+## Qué hace
+- Panel multipestaña: Overview, Markets, Macro, News, Radar
+- Quotes y series históricas con `yfinance`
+- Macro con proxies de mercado y soporte opcional para FRED
+- Noticias con RSS público y soporte opcional para APIs
+- JSON estáticos en `docs/data/` para servir con GitHub Pages
+- Frontend modular sin framework
+
+## Importante
+No es un clon exacto de Bloomberg ni ofrece streaming tick a tick. En GitHub Pages funciona como terminal *snapshot-based*: el backend regenera JSON y el frontend los relee periódicamente.
+
+## Estructura
+```text
+.github/workflows/refresh.yml
+backend/
+  run_terminal.py
+  config/watchlists.json
+  sources/
+    yahoo.py
+    fred.py
+    news.py
+docs/
+  index.html
+  assets/css/styles.css
+  assets/js/api.js
+  assets/js/charts.js
+  assets/js/app.js
+  data/
+    overview.json
+    markets.json
+    macro.json
+    news.json
+    radar.json
+```
+
+## Variables opcionales
+- `FRED_API_KEY`
+- `NEWSAPI_KEY`
+- `FINNHUB_API_KEY`
+
+## Despliegue
+1. Sube todo el repo.
+2. Activa GitHub Pages desde `main` + `/docs`.
+3. En Actions, da permisos de escritura al workflow.
+4. Lanza `Refresh Market Terminal`.
+
+## Límite importante de GitHub
+El `schedule` oficial de GitHub Actions no baja de 5 minutos. Si quieres forzar cada minuto, tendrás que usar un trigger externo sobre `workflow_dispatch` o mover la generación de datos a otro hosting.
